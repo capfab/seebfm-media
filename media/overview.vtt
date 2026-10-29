@@ -1,0 +1,49 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:06.000
+SeeBFM: BFM-Zero trained further with a height scan of the ground
+
+2
+00:00:06.000 --> 00:00:14.000
+One forward prompt on stairs: BFM-Zero falls and SeeBFM climbs
+
+3
+00:00:14.000 --> 00:00:26.000
+The six locomotion prompts on the same stairs
+
+4
+00:00:26.000 --> 00:00:34.000
+The real scan, a level scan, and a model trained without the scan
+
+5
+00:00:34.000 --> 00:00:42.000
+Walking backward towards stairs, with the scan and without it
+
+6
+00:00:42.000 --> 00:00:52.000
+A student predicts the scan from a head camera and a body camera
+
+7
+00:00:52.000 --> 00:00:56.000
+Typed: “go forward”
+
+8
+00:00:56.000 --> 00:01:00.000
+Typed: “walk forward”, on boxes
+
+9
+00:01:00.000 --> 00:01:04.000
+Typed: “walk forward”, on a slope
+
+10
+00:01:04.000 --> 00:01:08.000
+A 40 cm gap
+
+11
+00:01:08.000 --> 00:01:12.000
+A 2 m/s push
+
+12
+00:01:12.000 --> 00:01:16.000
+A 15 cm block driven at the robot
