@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SeeBFM: video presentation</title>
+<!-- The slideshow version of the project video, after TACT-ful's (reveal.js 5.1.0, one slide per segment of spec.js, each
+     advancing on its own after the segment's length; arrow keys or a click to navigate; the narration plays as in the film, M turns it
+     off or on, and C hides or shows its captions). -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+<link rel="stylesheet" href="edit.css">
+<style>
+  html, body { background: #D6D2C6; }
+  .reveal .slides { text-align: left; }
+  .reveal .slides section { padding: 0; width: 1920px; height: 1080px; }
+  .reveal .stage { position: absolute; left: 0; top: 0; }
+  .reveal .subs { transition: opacity 0.2s; }
+  body.nocc .reveal .subs { display: none; }
+  .reveal sup { vertical-align: super; font-size: 0.6em; line-height: 0; }
+  .hint { position: fixed; right: 16px; bottom: 12px; z-index: 40; font: 500 13px "Space Grotesk", sans-serif; color: #4d483f; opacity: 0.8; }
+  .hint button { font: inherit; color: inherit; background: none; border: 1px solid #a9a191; border-radius: 999px; padding: 1px 10px; margin-right: 8px; cursor: pointer; }
+  .hint button.off { opacity: 0.6; }
+  .hint button.wait { border-color: #12a06b; color: #0e6636; }
+</style>
+</head>
+<body>
+<div class="reveal"><div class="slides" id="slides"></div></div>
+<div class="hint"><button id="voice" type="button">Voice on</button>← → or click · M voice · C captions</div>
+<script src="gsap.min.js"></script>
+<script src="spec.js"></script>
+<script src="slots.js"></script>
+<script src="voice.js"></script>
+<script src="build.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script>
+// the narration: each spoken segment's line, the film's own take, starting as far into its slide as in the film (voice.js).
+// One audio element plays every line: a page holds only so many media players, and the site's own clips need theirs.
+const VOICE_DIR = "voice/", VOICE_EXT = ".m4a";   // export_slides.py points these at the site's copies
+const LINES = {};
+SPEC.segments.forEach(seg => { if (seg.voice && window.VOICE && VOICE.lengths[seg.n]) LINES[seg.n] = VOICE_DIR + "seg_" + String(seg.n).padStart(2, "0") + VOICE_EXT; });
+// every line is fetched at once, before the slides' clips ask for theirs, and plays from memory (1.1 MB for all twelve); where
+// fetch cannot reach the file (the page opened from disk), the line plays from its file
+const HELD = {};
+Object.entries(LINES).forEach(([n, u]) => { HELD[n] = fetch(u).then(r => r.ok ? r.blob() : Promise.reject()).then(b => URL.createObjectURL(b)).catch(() => u); });
+const player = new Audio(); player.preload = "auto";
+window.LINES = LINES; window.PLAYER = player;
+let voiceOn = true, waiting = false, cur = -1;
+const button = document.getElementById("voice");
+function label() { button.textContent = waiting ? "Voice: click to start" : voiceOn ? "Voice on" : "Voice off"; button.className = waiting ? "wait" : voiceOn ? "" : "off"; }
+function load(n) {
+  if (!LINES[n] || player.dataset.line === String(n)) return;
+  player.dataset.line = n; HELD[n].then(u => { if (player.dataset.line === String(n)) player.src = u; });
+}
+function quiet() { player.pause(); }
+// the current slide's line from where its slide is; a browser that has not seen a click or a key yet refuses, and the button asks for one
+function speak() {
+  const s = SLIDES[cur]; if (!s || !LINES[s.seg.n] || !voiceOn) return;
+  const start = () => {
+    if (SLIDES[cur] !== s || !voiceOn) return;
+    const at = s.tl.time() - (VOICE.leads[s.seg.n] ?? 0.4); if (at < 0 || at >= VOICE.lengths[s.seg.n]) return;
+    player.currentTime = at; player.play().then(() => { waiting = false; label(); }).catch(() => { waiting = true; label(); });
+  };
+  load(s.seg.n);
+  HELD[s.seg.n].then(() => { if (SLIDES[cur] !== s) return; if (player.readyState >= 1) start(); else player.addEventListener("loadedmetadata", start, { once: true }); });
+}
+function toggleVoice() { if (waiting) { waiting = false; voiceOn = true; } else voiceOn = !voiceOn; label(); if (voiceOn) speak(); else quiet(); }
+button.addEventListener("click", toggleVoice);
+const SLIDES = [];
+SPEC.segments.forEach(seg => {
+  const sec = document.createElement("section");
+  sec.dataset.autoslide = Math.round(seg.dur * 1000); sec.dataset.backgroundColor = "#D6D2C6";
+  const stage = EDIT.h("div", "stage"); sec.appendChild(stage);
+  const { tl, vids } = EDIT.segment(seg, stage, "deck");
+  tl.pause(0);
+  // each clip starts, runs and holds its last frame as in the film
+  vids.forEach(c => {
+    c.v.loop = false;
+    tl.call(() => { c.v.playbackRate = c.rate; c.v.currentTime = c.last ? Math.max(0, c.dur - 0.05) : c.inpt; if (!c.last) c.v.play().catch(() => {}); }, null, Math.max(0, c.t0));
+    if (c.t1 < seg.dur) tl.call(() => c.v.pause(), null, c.t1 + 0.3);
+  });
+  // the chapter, top right, as TACT-ful's act tag
+  if (seg.chapter) { const n = EDIT.h("div", "chapname", seg.chapter); stage.appendChild(n); if (seg.chapterFrom) { gsap.set(n, { opacity: 0 }); tl.to(n, { opacity: 1, duration: 0.3 }, seg.chapterFrom); } }
+  // the narration's line, and its captions
+  if (LINES[seg.n]) tl.call(speak, null, VOICE.leads[seg.n] ?? 0.4);
+  const subs = EDIT.h("div", "subs"); stage.appendChild(subs); gsap.set(subs, { opacity: 0 });
+  EDIT.pieces(seg).forEach(([a, b, txt]) => { tl.call(() => { subs.textContent = txt; }, null, a).set(subs, { opacity: 1 }, a).set(subs, { opacity: 0 }, b - 0.05); });
+  document.getElementById("slides").appendChild(sec);
+  SLIDES.push({ sec, tl, vids, seg });
+});
+function enter(i) {
+  SLIDES.forEach((s, k) => { if (k !== i) { s.tl.pause(0); s.vids.forEach(c => c.v.pause()); } });
+  quiet(); cur = i;
+  const s = SLIDES[i]; if (!s) return;
+  load(s.seg.n);   // the line loads during its lead
+  s.vids.forEach(c => { c.v.pause(); c.v.currentTime = c.inpt; });
+  s.tl.restart();
+}
+Reveal.initialize({ hash: true, controls: false, progress: true, slideNumber: false, transition: "fade", transitionSpeed: "default", backgroundTransition: "fade",
+                    width: 1920, height: 1080, margin: 0, minScale: 0.1, maxScale: 2.0, center: false, loop: false, autoSlideStoppable: true, pdfMaxPagesPerSlide: 1 });
+Reveal.on("ready", e => enter(e.indexh));
+Reveal.on("slidechanged", e => enter(e.indexh));
+document.querySelector(".reveal").addEventListener("click", e => { if (e.clientX < window.innerWidth * 0.25) Reveal.prev(); else Reveal.next(); });
+document.addEventListener("keydown", e => { if (e.key === "c" || e.key === "C") document.body.classList.toggle("nocc"); if (e.key === "m" || e.key === "M") toggleVoice(); });
+</script>
+</body>
+</html>

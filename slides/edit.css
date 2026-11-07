@@ -1,0 +1,78 @@
+/* The project video's look: the site's honey studio (docs/site/HANDOFF_site.md: background #D6D2C6), Space Grotesk,
+   the model colours of docs/paper/seebfm/STYLE.md. Shared by the film (film.html) and the slideshow (slides.html). */
+@font-face { font-family: "Space Grotesk"; src: url("fonts/SpaceGrotesk.ttf") format("truetype"); font-weight: 300 700; }
+:root {
+  --studio: #D6D2C6; --studio-ink: #4d483f; --ink: #0b0b0b; --ink2: #4d483f; --paper: #F6F4EF; --rule: #c4bfb2;
+  --see: #12a06b; --bfm0: #4679db; --level: #a83f7c; --noscan: #e4682a; --student: #0e6636; --vio: #7c68d6;
+}
+.stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--studio);
+         font-family: "Space Grotesk", sans-serif; color: var(--ink); }
+.seg { position: absolute; inset: 0; }
+/* clips: native size or smaller, never stretched; framed ones get a soft edge */
+.shot { position: absolute; overflow: hidden; background: #cfcabd; }
+.shot video, .shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.shot.framed { border-radius: 16px; box-shadow: 0 10px 34px rgba(60, 52, 38, 0.18); }
+.shot.full { border-radius: 0; }
+.ph { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+      background: repeating-linear-gradient(135deg, #c9c4b7 0 18px, #cdc8bb 18px 36px); color: var(--studio-ink); text-align: center; padding: 30px; box-sizing: border-box; }
+.ph .pk { font: 600 30px "Space Grotesk"; letter-spacing: 0.02em; }
+.ph .pv { font: 400 24px "Space Grotesk"; opacity: 0.8; }
+.dim { position: absolute; inset: 0; background: rgba(214, 210, 198, 0.8); }
+/* labels on clips */
+.tag { position: absolute; display: flex; align-items: center; gap: 12px; padding: 8px 18px 8px 14px; border-radius: 30px;
+       background: rgba(246, 244, 239, 0.94); font: 600 30px "Space Grotesk"; color: var(--ink); white-space: nowrap; }
+.tag i { width: 18px; height: 18px; border-radius: 9px; display: block; }
+.chip { position: absolute; left: 50%; top: 40px; transform: translateX(-50%); display: flex; align-items: center; gap: 14px; padding: 10px 24px;
+        border-radius: 32px; background: #fff; border: 3px solid var(--ink); font: 600 30px "Space Grotesk"; white-space: nowrap; }
+.chip .p { color: var(--studio-ink); font-weight: 400; }
+.badge { position: absolute; right: 40px; bottom: 36px; padding: 6px 16px; border-radius: 22px; background: rgba(246, 244, 239, 0.9);
+         font: 500 24px "Space Grotesk"; color: var(--studio-ink); }
+.lower { position: absolute; left: 60px; bottom: 60px; display: flex; align-items: center; gap: 22px; padding: 16px 30px 16px 18px;
+         border-radius: 18px; background: rgba(246, 244, 239, 0.96); box-shadow: 0 6px 24px rgba(60, 52, 38, 0.12); }
+.lower .n { width: 56px; height: 56px; border-radius: 28px; background: var(--ink); color: #fff; font: 600 30px "Space Grotesk";
+            display: flex; align-items: center; justify-content: center; flex: none; }
+.lower .t { font: 600 40px "Space Grotesk"; line-height: 1.1; }
+.lower .s { font: 400 28px "Space Grotesk"; color: var(--ink2); margin-top: 4px; }
+.key { position: absolute; display: flex; align-items: center; gap: 14px; padding: 8px 18px; border-radius: 26px; background: rgba(246, 244, 239, 0.94);
+       font: 500 28px "Space Grotesk"; color: var(--ink2); }
+.key i { width: 34px; height: 12px; border-radius: 6px; display: block; }
+.statement { position: absolute; left: 0; right: 0; text-align: center; font: 600 64px "Space Grotesk"; color: var(--ink); }
+.statement span { background: rgba(246, 244, 239, 0.92); padding: 10px 34px; border-radius: 20px; box-decoration-break: clone; -webkit-box-decoration-break: clone; line-height: 1.5; }
+.statement.small { font-size: 40px; font-weight: 500; }
+/* typed prompt cards and the command field */
+.typed { position: absolute; display: flex; align-items: center; gap: 16px; padding: 14px 26px; border-radius: 16px; background: #fff;
+         border: 3px solid #1f8f86; font: 500 34px "Space Grotesk"; white-space: nowrap; box-shadow: 0 6px 20px rgba(60, 52, 38, 0.12); }
+.typed .k { font-weight: 600; color: #1f8f86; }
+.typed .c { display: inline-block; width: 3px; height: 1.05em; background: var(--ink); margin-left: 2px; vertical-align: -0.15em; }
+.zchip { position: absolute; display: flex; align-items: center; justify-content: center; border-radius: 24px; background: #efeafb; border: 4px solid var(--vio);
+         font: italic 64px "Latin Modern Roman", "LM Roman 10", serif; color: #5b45c9; }
+/* the chapter bar */
+.chapters { position: absolute; left: 0; right: 0; top: 0; height: 10px; display: flex; gap: 4px; padding: 0 4px; box-sizing: border-box; }
+.chapters div { flex: 1; background: rgba(11, 11, 11, 0.12); border-radius: 0 0 4px 4px; }
+.chapters div.on { background: var(--ink); }
+.chapname { position: absolute; right: 40px; top: 22px; font: 600 22px "Space Grotesk"; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(11, 11, 11, 0.5); }
+/* bars: value at each bar's end, in the model colours, no axes */
+.bars { position: absolute; }
+.bars .row { display: flex; align-items: center; gap: 16px; height: 52px; }
+.bars .lab { font: 500 28px "Space Grotesk"; color: var(--ink2); text-align: right; flex: none; }
+.bars .track { position: relative; height: 30px; flex: 1; }
+.bars .bar { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 0 8px 8px 0; }
+.bars .val { position: absolute; top: 50%; transform: translateY(-50%); font: 600 30px "Space Grotesk"; color: var(--ink); white-space: nowrap; padding-left: 12px; }
+.bars .hd { font: 600 30px "Space Grotesk"; color: var(--ink); margin-bottom: 10px; }
+.bars .row.dimmed { opacity: 0.35; }
+/* title and closing cards */
+.card { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; width: 1820px; }
+.card .t1 { font: 700 150px "Space Grotesk"; letter-spacing: -0.01em; line-height: 1; }
+.card .t1 b { color: var(--see); font-weight: 700; }
+.card .t2 { font: 500 52px "Space Grotesk"; margin-top: 18px; color: var(--ink); }
+.card .au { font: 500 32px "Space Grotesk"; margin-top: 40px; color: var(--ink); line-height: 1.5; }
+.card .af { font: 400 24px "Space Grotesk"; margin-top: 12px; color: var(--ink2); line-height: 1.55; }
+.card .logoband { display: inline-flex; flex-direction: column; align-items: center; gap: 30px; margin-top: 36px; padding: 28px 48px; }
+.card .logorow { display: flex; align-items: center; justify-content: center; gap: 64px; }
+.card .logoband img { display: block; }
+.card .url { font: 600 36px "Space Grotesk"; margin-top: 36px; color: var(--see); }
+.card .note { font: 400 28px "Space Grotesk"; margin-top: 16px; color: var(--ink2); }
+.card sup { font-size: 0.6em; }
+/* the narration, burned in only in the preview (the film carries it as a subtitle track) */
+.subs { position: absolute; left: 50%; bottom: 210px; transform: translateX(-50%); max-width: 1500px; text-align: center; padding: 10px 26px; border-radius: 12px;
+        background: rgba(11, 11, 11, 0.62); color: #fff; font: 500 32px "Space Grotesk"; line-height: 1.35; }

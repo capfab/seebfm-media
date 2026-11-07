@@ -1,0 +1,118 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:04.918 line:78%
+Two humanoids get the same prompt, walk forward at 0.7 m/s,
+
+2
+00:00:04.918 --> 00:00:08.440 line:78%
+and only the one on the right sees the stairs.
+
+3
+00:00:14.200 --> 00:00:18.086 line:78%
+A behavior foundation model like BFM-Zero turns a reward,
+
+4
+00:00:18.086 --> 00:00:23.812 line:78%
+a goal pose or a motion to follow into a prompt for one pre-trained humanoid policy.
+
+5
+00:00:23.812 --> 00:00:27.425 line:78%
+Trained on flat ground and sensing only its own body,
+
+6
+00:00:27.425 --> 00:00:30.970 line:78%
+it falls on stairs and boxes under the same prompts.
+
+7
+00:00:31.400 --> 00:00:37.290 line:78%
+Perception should change how the robot carries out a prompt and leave what the prompt asks for unchanged.
+
+8
+00:00:39.400 --> 00:00:46.393 line:78%
+SeeBFM continues BFM-Zero's pretraining on terrain with a height scan of the ground around the robot.
+
+9
+00:00:46.393 --> 00:00:51.793 line:78%
+Every network reads the scan except the backward network, which turns rewards,
+
+10
+00:00:51.793 --> 00:00:54.285 line:78%
+goal poses and motions into prompts,
+
+11
+00:00:54.285 --> 00:00:58.370 line:78%
+so a prompt asks for the same body states on every terrain.
+
+12
+00:01:02.400 --> 00:01:04.934 line:78%
+With the same six locomotion prompts,
+
+13
+00:01:04.934 --> 00:01:11.097 line:78%
+SeeBFM crosses stairs going up in more than half of its attempts and boxes in two of five,
+
+14
+00:01:11.097 --> 00:01:13.220 line:78%
+where BFM-Zero crosses neither.
+
+15
+00:01:15.400 --> 00:01:19.920 line:78%
+On stairs the forward prompt slows down and lifts the swing foot over each step.
+
+16
+00:01:24.400 --> 00:01:28.520 line:78%
+Crossing drops sharply when the scan is made level or left out of training.
+
+17
+00:01:32.400 --> 00:01:35.649 line:78%
+Walking forward and turning carry over to terrain.
+
+18
+00:01:35.649 --> 00:01:40.522 line:78%
+Walking sideways slows by more than half and walking backward nearly stops,
+
+19
+00:01:40.522 --> 00:01:46.890 line:78%
+so SeeBFM stays on the edge of a box where the model trained without the scan steps off and falls.
+
+20
+00:01:49.400 --> 00:01:52.448 line:78%
+Goal poses are prompted the same way on terrain,
+
+21
+00:01:52.448 --> 00:01:57.020 line:78%
+where they end 2 to 4 cm further from their targets than on flat ground.
+
+22
+00:01:59.400 --> 00:02:01.470 line:78%
+A real robot has no height scan,
+
+23
+00:02:01.470 --> 00:02:04.576 line:78%
+so a depth student predicts it from two cameras.
+
+24
+00:02:04.576 --> 00:02:09.364 line:78%
+We record SeeBFM's rollouts on terrain, render what each camera would see,
+
+25
+00:02:09.364 --> 00:02:15.510 line:78%
+and train the student so the frozen policy acts on its prediction as it would on the true scan.
+
+26
+00:02:20.400 --> 00:02:24.318 line:78%
+A language step turns a typed request into a motion prompt,
+
+27
+00:02:24.318 --> 00:02:30.360 line:78%
+and SeeBFM carries out everyday requests in about half of its attempts on stairs and boxes.
+
+28
+00:02:37.400 --> 00:02:39.803 line:78%
+All of these results are in simulation,
+
+29
+00:02:39.803 --> 00:02:43.500 line:78%
+and tests on a G1 with the depth student are in preparation.
+
